@@ -1,0 +1,232 @@
+/3rdperson.lua
+/AA_-_Whiteout.txt
+/AcatelBeta.lua
+/acidtech.lua
+/Adaptive_weapon-obfuscated.txt
+/Aimbot logs.lua
+/aipeek.lua
+/airwalk.txt
+/alien.lua
+/ambani.lua
+/angelwings.lua
+/animfix_perfect_20.lua
+/Anti-aimbot.lua
+/anti_kick_v2.txt
+/aspect ratio.lua
+/astral.lua
+/astra_leak.lua
+/ataraxia_beta.lua
+/aura_debug.lua
+/aura_private.lua
+/autobuy.lua
+/autopeek ( ai peek).lua
+/awoll crosshair.lua
+/bluhgang v2 galaxy.lua
+/bluhgangv2.lua
+/cheat_reveal.lua
+/clean console.lua
+/color changer.lua
+/damage marker.lua
+/DamageIndicator.lua
+/defensive.lua
+/dumped__3D bomb timer.lua
+/dumped__Account manager (XP & Stats).lua
+/dumped__Actual force body aim on lethal.lua
+/dumped__Auto _Hold this position_ for bots.lua
+/dumped__Auto-equip Heavy Pistol based on config.lua
+/dumped__Automatic purchase.lua
+/dumped__Automatically Reload Scripts (For Developers).lua
+/dumped__Automatically report and mute russians.lua
+/dumped__better grenade inventory esp.lua
+/dumped__Better scope overlay.lua
+/dumped__Breakables Ragebot.lua
+/dumped__Bullet beam tracers.lua
+/dumped__Bypass chat filter.lua
+/dumped__Chat Translator.lua
+/dumped__Cheater Detector.lua
+/dumped__Chris_s Public Lua - !start !stop and More.lua
+/dumped__Cinematic black bars.lua
+/dumped__Clantag Breaker.lua
+/dumped__Clantag Changer.lua
+/dumped__Client version spoofer.lua
+/dumped__Client-side name changer.lua
+/dumped__cloud radar.lua
+/dumped__cl_downloadfilter mapsonly.lua
+/dumped__Community Server Adblock.lua
+/dumped__Console_log font changer.lua
+/dumped__Crescent Movement (Strafe Optimizer, Bhop Styles, Movement Recorder).lua
+/dumped__Crosshair hitlog.lua
+/dumped__CSGO Cloud.lua
+/dumped__CSGO Taskbar Notifications (New round _ Match found).lua
+/dumped__Custom health bar.lua
+/dumped__Custom log console.lua
+/dumped__Custom Radio Messages (Colors, Spam).lua
+/dumped__Desync Fakewalk (Customizable!).lua
+/dumped__Disable fakelag on round end.lua
+/dumped__Discord Rich Presence.lua
+/dumped__Dormant aimbot.lua
+/dumped__Dormant player radar.lua
+/dumped__Enemy team chat revealer.lua
+/dumped__Extended aimbot logs.lua
+/dumped__Extended Grenade ESP.lua
+/dumped__Extended panorama UI.lua
+/dumped__Fake ban & cooldown messages.lua
+/dumped__Fake Skin Unbox & Received in trade messages.lua
+/dumped__Fog override.lua
+/dumped__Footstep ESP.lua
+/dumped__Force aspect ratio.lua
+/dumped__Force body aim on peek.lua
+/dumped__Force safe point on specific conditions.lua
+/dumped__Fortnite damage.lua
+/dumped__FPS Indicator.lua
+/dumped__Friends list [Automatic player list, custom ESP, nicknames].lua
+/dumped__Gamesense RPG.lua
+/dumped__Grenade Inventory ESP.lua
+/dumped__Helper V3 - Grenades, Movement, One-ways (Legit + HvH).lua
+/dumped__Hide error models.lua
+/dumped__Hit sound.lua
+/dumped__Informant (info spam on death).lua
+/dumped__Information Screen.lua
+/dumped__Internet Radio (TuneIn Client).lua
+/dumped__Invite Cooldown Bypass _ Silent Friend Invites.lua
+/dumped__Jumpstop.lua
+/dumped__Kill messages.lua
+/dumped__Lethality indicator.lua
+/dumped__Load preset based on equipped weapon (6_27_2020).lua
+/dumped__Lobby_Party Chat Utilities.lua
+/dumped__LUA Radio.lua
+/dumped__Luminus Lights.lua
+/dumped__Magnet melee.lua
+/dumped__Matchmaking region selector.lua
+/dumped__Moveguard.lua
+/dumped__Music Kit Changer.lua
+/dumped__Navigation Mesh Walkbot.lua
+/dumped__nyaahook! - semi-rage script.lua
+/dumped__Operation Mission Dumper.lua
+/dumped__Overwatch Bot - Automated Overwatch While In-GAME!.lua
+/dumped__Panorama Player_Lobby finder.lua
+/dumped__Panorama server browser.lua
+/dumped__Pilot_s buybot.lua
+/dumped__Ping Marker Notifications.lua
+/dumped__Player arrows.lua
+/dumped__Player tracker.lua
+/dumped__Player Trails.lua
+/dumped__Positional Settings.lua
+/dumped__Prevent lobby leaders queueing specific maps.lua
+/dumped__Punchbot.lua
+/dumped__Quick bomb plant.lua
+/dumped__Radial body yaw indicator.lua
+/dumped__Randomize fake yaw limit on hit.lua
+/dumped__Rare weapon animations.lua
+/dumped__Revolver lethal warning.lua
+/dumped__Round damage log.lua
+/dumped__Scoreboard equipment.lua
+/dumped__Semirage.lua
+/dumped__Show threats.lua
+/dumped__Show viewmodel in scope.lua
+/dumped__sigma_teleport.lua (extended 30tick~ teleport).lua
+/dumped__Skybox changer.lua
+/dumped__Slowdown indicator.lua
+/dumped__Solus UI.lua
+/dumped__Sonar.lua
+/dumped__Spotify Player.lua
+/dumped__Steam Achievement Manager.lua
+/dumped__Sync keys.lua
+/dumped__Tab mover.lua
+/dumped__Taser warning.lua
+/dumped__Teleport + respawn exploit.lua
+/dumped__Thirdperson zoom out animation.lua
+/dumped__VALORANT kill effects.lua
+/dumped__World markers.lua
+/dumped__[Grief] Team damage list.lua
+/dumped__[UPDATED] Lobby IP Grabber and Blocker.lua
+/dumped___FAKE_ flag_indicator for enemies.lua
+/dumped___LETHAL_ indicator_flag.lua
+/elysium.lua
+/Endpoint_v2.lua
+/enterpriseselfleak.lua
+/ephemeral1.lua
+/esp_zeus_warning.lua
+/exscord.lua
+/exscord_sk.lua
+/feelsense_1.lua
+/filter console.lua
+/flaxyaw.lua
+/flickery_flick1.txt
+/forcebaimonpeek_1.txt
+/gamesensetools.lua
+/gravity_source.lua
+/grenade timer.lua
+/healthbar.lua
+/healthbar.txt
+/hitchance.lua
+/hitrate.lua
+/hysteria.lua
+/indicators.lua
+/interitus.txt
+/in_air.txt
+/jumpscout.lua
+/lavender.lua
+/lby_breaker.txt
+/leaf-recode.lua
+/leaf.lua
+/lib
+/lotus.lua
+/luasense_1.lua
+/medusa.txt
+/mercury.lua
+/message (6).txt
+/misc_china_hat.lua
+/model changer.lua
+/momentum.lua
+/monoceros.lua
+/MyTools.lua
+/oldangelwings.lua
+/opulent.lua
+/overstar.lua
+/overvest_v2.lua
+/paradoxv2.lua
+/ping_exp.txt
+/poison.lua
+/poisoncrack_1(fake poisontech).lua
+/prophesy.lua
+/RAGE_Unsafe_Charge_In_Air.lua
+/recode.lua
+/redux bullet tracer.lua
+/remap.lua
+/remedy.lua
+/resolver(Obfuscated).lua
+/risen old.lua
+/r_anim_fix.lua
+/sapphyrus_watermark.lua
+/semirage_.txt
+/senko-adaptive-skeet.txt
+/senkotech.lua
+/sigma_better_force_baim.txt
+/sigma_force_ragebot_fire.txt
+/skin_color.lua
+/skybox.lua
+/skybox_changer.lua
+/solus2-1.lua
+/Sound volume modifiers.lua
+/stardust.lua
+/starlight.lua
+/STARLIGHT_SRC_1.lua
+/tabsense.lua
+/tabsense_stable.lua
+/thirdperson.lua
+/thirperson.lua
+/tonka lua.lua
+/Tonka_esp_update.txt
+/tsv4_1_1.txt
+/tsv4_fixed.lua
+/vandal.lua
+/viewmodel in scope.lua
+/viewmodel.lua
+/view_model_changer.lua
+/volta.lua
+/Wireframe_smoke.txt
+/wpswitch.txt
+/wraithrecode(2023).lua
+/zov-yaw.lua
+/zovyaw.lua
