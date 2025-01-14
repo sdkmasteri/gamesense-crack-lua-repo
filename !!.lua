@@ -3,8 +3,16 @@ local check = ui.reference("Config", "Lua", "Load on startup")
 local loadb = ui.reference("Config", "Lua", "Load script")
 local loadc = ui.reference("Config", "Lua", "Unload script")
 local luat = {}
-local cfgs = database.read("luacfgs")
-local b = ui.new_listbox("Config", "Lua", "Scripts", database.read("luacfgs"))
+local cfgs = database.read("luacfgs") or {}
+local cfgnames = {}
+do
+    if cfgs ~= nil then
+        for key, _ in pairs(cfgs) do
+            table.insert(cfgnames, key)
+        end
+    end
+end
+local b = ui.new_listbox("Config", "Lua", "Scripts", cfgnames)
 local selfpos = ui.get(luabox)
 
 local maxluas = database.read("maxluas")
@@ -29,9 +37,7 @@ function luat:is_in(val)
     end
     return false
 end
---print(maxluas)
-local cfgname = ui.new_textbox("Config", "Lua", "Create")
-local b_create = ui.new_button("Config", "Lua", "Create", function()
+local function get_activity()
     local prev, nex = -1, 0
     local index = 0
     local n = 2147483648
@@ -61,7 +67,14 @@ local b_create = ui.new_button("Config", "Lua", "Create", function()
         --index = index + 1 
     end
     ui.set(luabox, selfpos)
-    for key, value in pairs(luat) do print(value) end
+end
+--print(maxluas)
+local cfgname = ui.new_textbox("Config", "Lua", "Name")
+local b_create = ui.new_button("Config", "Lua", "Create", function()
+    local cname = ui.get(cfgname)
+    get_activity()
+    cfgs[cname] = luat
+    database.write("luacfgs", cfgs)
 end)
 local b_load = ui.new_button("Config", "Lua", "Load", function()
 end)
