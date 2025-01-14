@@ -2,6 +2,7 @@ local luabox = ui.reference("Config", "Lua", "Scripts")
 local check = ui.reference("Config", "Lua", "Load on startup")
 local loadb = ui.reference("Config", "Lua", "Load script")
 local loadc = ui.reference("Config", "Lua", "Unload script")
+local cqueue = database.read("queue")
 local luat = {}
 local cfgs = database.read("luacfgs") or {}
 local cfgnames = {}
@@ -12,7 +13,7 @@ do
         end
     end
 end
-local b = ui.new_listbox("Config", "Lua", "Scripts", cfgnames)
+local cfglistbox = ui.new_listbox("Config", "Lua", "Scripts", cfgnames)
 local selfpos = ui.get(luabox)
 
 local maxluas = database.read("maxluas")
@@ -66,19 +67,59 @@ local function get_activity()
         end
         --index = index + 1 
     end
-    ui.set(luabox, selfpos)
+    ui.set(luabox, -n + selfpos)
+    for _, v in pairs(luat) do print(v) end
+end
+if cqueue ~= nil then
+    local head = table.remove(cqueue, 1)
+    if head ~= nil then
+        ui.set(luabox, head)
+        database.write("queue", nil)
+        ui.set(loadc)
+    end
 end
 --print(maxluas)
 local cfgname = ui.new_textbox("Config", "Lua", "Name")
+ui.set_callback(cfglistbox, function()
+    local current_name = cfgnames[ui.get(cfglistbox) + 1]
+    ui.set(cfgname, current_name)
+end)
 local b_create = ui.new_button("Config", "Lua", "Create", function()
     local cname = ui.get(cfgname)
-    get_activity()
-    cfgs[cname] = luat
-    database.write("luacfgs", cfgs)
+    print(cname)
+    if cname ~= nil and cname:gsub("%s+", "") ~= "" then
+        get_activity()
+        cfgs[cname] = luat
+        database.write("luacfgs", cfg)
+        client.reload_active_scripts()
+    else 
+        error("NOCFG")
+    end
 end)
 local b_load = ui.new_button("Config", "Lua", "Load", function()
+    local cname = ui.get(cfgname)
+    if cname ~= nil and cfgs[cname] ~= nil then
+        database.write("queue", cfgs[cname])
+        client.reload_active_scripts()
+    else
+        error("NOCFG")
+    end
+
 end)
 local b_save = ui.new_button("Config", "Lua", "Save", function()
+    local cname = ui.get(cfgname)
+    if cfgs[cname] ~= nil then
+        get_activity()
+        cfgs[cname] = luat
+        database.write("luacfgs", cfgs)
+        client.reload_active_scripts()
+    else
+        error("NOCFG")
+    end
 end)
 local b_delete = ui.new_button("Config", "Lua", "Delete", function()
+    local cname = ui.get(cfgname)
+    cfgs[cname] = nil
+    database.write("luacfgs", cfgs)
+    client.reload_active_scripts()
 end)
