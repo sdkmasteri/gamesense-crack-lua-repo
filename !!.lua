@@ -7,15 +7,27 @@ local inspect = require("gamesense/inspect")
 local luat = {}
 local cfgs = database.read("luacfgs") or {}
 local toload = database.read("88821:333333")
+local toloadsize = database.read("tolouad:size") or 0
+local prevent = readfile("luafix.txt") or 0
 local cfgnames = {}
 local n = 2147483648
-if toload ~= nil and #toload > 0 then
-    print("agusha")
-    print(inspect(toload))
+
+if toload ~= nil and #toload > 0 and toloadsize > 0 then
+    print("Orig: ", inspect(toload))
     ui.set(luabox, toload[1])
-    table.remove(toload)
-    --ui.set(loadb)
-    client.reload_active_scripts()
+    ui.set(luabox, toload[1])
+    print("luafix.txt : ", prevent)
+    if toloadsize >= tonumber(prevent) then
+        table.remove(toload, 1)
+        print("removed: ", inspect(toload))
+        writefile("luafix.txt", prevent + 1)
+        client.delay_call(2, ui.set, loadb)
+    else
+        toload = nil
+        toloadsize = 0
+        writefile("luafix.txt", 0)
+    end
+
 end
 do
     if cfgs ~= nil then
@@ -29,7 +41,7 @@ local selfpos = ui.get(luabox)
 local maxluas = database.read("maxluas")
 
 if maxluas == nil then
-    print("maxluas nil")
+
     local index = 0
     local prev, next = -1, 0
     while prev < next do
@@ -40,8 +52,10 @@ if maxluas == nil then
         ui.set(luabox, index)
         next = ui.get(luabox)
     end
+    maxluas = index - 1
+    print("maxluas counted: ", maxluas)
     ui.set(luabox, -n + selfpos)
-    database.write("maxluas", index - 1) 
+    --database.write("maxluas", index - 1) 
 end
 function luat:is_in(val)
     for _, v in pairs(self) do
@@ -78,7 +92,7 @@ local function get_activity()
         --index = index + 1 
     end
     ui.set(luabox, -n + selfpos)
-    print(inspect(luat))
+    --print(inspect(luat))
 end
 
 
@@ -94,7 +108,7 @@ local b_create = ui.new_button("Config", "Lua", "Create", function()
     if cname ~= nil and cname:gsub("%s+", "") ~= "" then
         ui.set(luabox, -n + selfpos)
         get_activity()
-        cfgs[cname] = luat
+        cfgs[cname] = {unpack(luat)}
         --database.write("luacfgs", cfgs)
         client.reload_active_scripts()
     else 
@@ -106,8 +120,8 @@ local b_load = ui.new_button("Config", "Lua", "Load", function()
     if cname ~= nil and cfgs[cname] ~= nil then
         ui.set(luabox, -n + selfpos)
         print("LOADED: ", inspect(cfgs[cname]))
-        --database.write("lua::configname", cname)
         toload = {unpack(cfgs[cname])}
+        toloadsize = #toload
         client.reload_active_scripts()
     else
         error("NOCFG")
@@ -118,7 +132,7 @@ local b_save = ui.new_button("Config", "Lua", "Save", function()
     if cfgs[cname] ~= nil then
         ui.set(luabox, -n + selfpos)
         get_activity()
-        cfgs[cname] = luat
+        cfgs[cname] = {unpack(luat)}
         --database.write("luacfgs", cfgs)
         client.reload_active_scripts()
     else
@@ -128,44 +142,17 @@ end)
 local b_delete = ui.new_button("Config", "Lua", "Delete", function()
     local cname = ui.get(cfgname)
     cfgs[cname] = nil
-    --database.write("luacfgs", cfgs)
     ui.set(luabox, -n + selfpos)
     client.reload_active_scripts()
 end)
---every loads button spec overwrite leads to crash
---client.set_event_callback("paint_ui", function()
---    ui.set_visible(loadb, true)
---    ui.set_visible(loadc, true)
---    paint(ui.get(loadb))
---    print(ui.get(luabox))
---end)
---ui.set_callback(loadb, function()
---    print("loaded")
---end)
+
 function globsa()
 	print("defered")
     database.write("88821:333333", toload)
     database.write("luacfgs", cfgs)
     database.write("maxluas", maxluas) 
-    ui.set(luabox, -n + selfpos)
+    database.write("tolouad:size", toloadsize)
+
 end
 defer(globsa)
 
---if database.read("lua::configname") ~= nil then
---    local counter = database.read("lua::counter") or 1
---    local cname = database.read("lua::configname")
---    local len = #cfgs[cname]
---    local curr = cfgs[cname][counter]
---    --print(counter)
---    if counter <= len then
---        print("tryid: ", counter)
---        database.write("lua::counter", counter+1)
---        ui.set(luabox, curr)
---        --client.reload_active_scripts()
---        --ui.set(loadc)
---    else
---        print("ended: ", counter)
---        database.write("lua::configname", nil)
---        database.write("lua::counter", nil)
---    end
---end
