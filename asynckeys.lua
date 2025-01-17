@@ -44,6 +44,7 @@ dragble.empty_rect = function(index, x, y, w, h, r, g, b, a, hover)
         if not firstclick and not abs[index] then return end
         if clicked then
             if in_range(cpos, range) or abs[index] then
+                client.exec("-attack")
                 abs[index] = true
                 cursored[index] = {x = range.x1 + xdelta, y = range.y1 + ydelta}
             end
@@ -67,6 +68,23 @@ dragble.rectangle = function(index, x, y, w, h, r, g, b, a, hover)
         if not firstclick and not abs[index] then return end
         if clicked then
             if in_range(cpos, range) or abs[index] then
+                client.exec("-attack")
+                abs[index] = true
+                cursored[index] = {x = range.x1 + xdelta, y = range.y1 + ydelta}
+            end
+        else
+            abs[index] = false 
+        end
+    end
+end
+dragble.texture = function(index, texture_id, x, y, w, h, r, g, b, a, mode)
+    renderer.texture(texture_id, cursored[index] ~= nil and cursored[index].x or x, cursored[index] ~= nil and cursored[index].y or y, w, h, r, g, b, a, mode and mode or '')
+    local range = calcrange(cursored[index] ~= nil and cursored[index].x or x, cursored[index] ~= nil and cursored[index].y or y, w, h)
+    if ui.is_menu_open() then
+        if not firstclick and not abs[index] then return end
+        if clicked then
+            if in_range(cpos, range) or abs[index] then
+                client.exec("-attack")
                 abs[index] = true
                 cursored[index] = {x = range.x1 + xdelta, y = range.y1 + ydelta}
             end
@@ -90,12 +108,56 @@ client.set_event_callback("paint", function()
     firstclick = not oldclicked and clicked
 end)
 --@region dragble end
+local w_key = renderer.load_png(readfile("csgo/keys/w.png"), 52, 52)
+local w_ac = renderer.load_png(readfile("csgo/keys/w_active.png"), 52, 52)
+local a_key = renderer.load_png(readfile("csgo/keys/a.png"), 52, 52)
+local a_ac = renderer.load_png(readfile("csgo/keys/a_active.png"), 52, 52)
+local s_key = renderer.load_png(readfile("csgo/keys/s.png"), 52, 52)
+local s_ac = renderer.load_png(readfile("csgo/keys/s_active.png"), 52, 52)
+local d_key = renderer.load_png(readfile("csgo/keys/d.png"), 52, 52)
+local d_ac = renderer.load_png(readfile("csgo/keys/d_active.png"), 52, 52)
+
+local alph = {
+    ["W"] = 0,
+    ["A"] = 0,
+    ["S"] = 0,
+    ["D"] = 0
+}
 client.set_event_callback("paint",  function()
     if not ui.get(enabler) then return end
     local x, y = client.screen_size()
     local w, h = 100, 100
-    dragble.empty_rect("#1", 0, y*0.5, w, h, 255, 255, 255, 255, true)
-    dragble.empty_rect("#2", 100, 0, w, h, 255,255,0,255, true)
+    dragble.texture("#WKEY", w_key, 57, y*0.5 - 52, 52, 52, 255, 255, 255, 255)
+    dragble.texture("#AKEY", a_key, 5, y*0.5, 52, 52, 255, 255, 255, 255)
+    dragble.texture("#SKEY", s_key, 57, y*0.5, 52, 52, 255, 255, 255, 255)
+    dragble.texture("#DKEY", d_key, 109, y*0.5, 52, 52, 255, 255, 255, 255)
+    if client.key_state(0x57) then
+        alph["W"] = math.floor(math.lerp(alph["W"], 255, 0.5))
+    else
+        alph["W"] = math.ceil(math.lerp(alph["W"], 0, 0.5))
+    end
+    if client.key_state(0x41) then
+        alph["A"] = math.floor(math.lerp(alph["A"], 255, 0.5))
+    else
+        alph["A"] = math.ceil(math.lerp(alph["A"], 0, 0.5))
+    end
+    if client.key_state(0x53) then
+        alph["S"] = math.floor(math.lerp(alph["S"], 255, 0.5))
+    else
+        alph["S"] = math.ceil(math.lerp(alph["S"], 0, 0.5))
+    end
+    if client.key_state(0x44) then
+        alph["D"] = math.floor(math.lerp(alph["D"], 255, 0.5))
+    else
+        alph["D"] = math.ceil(math.lerp(alph["D"], 0, 0.5))
+    end
+    dragble.texture("#WACTIVE", w_ac, 57, y*0.5 -52, 52, 52, 255, 255, 255, alph["W"])
+    dragble.texture("#AACTIVE", a_ac, 5, y*0.5, 52, 52, 255, 255, 255, alph["A"])
+    dragble.texture("#SACTIVE", s_ac, 57, y*0.5, 52, 52, 255, 255, 255, alph["S"])
+    dragble.texture("#DACTIVE", d_ac, 109, y*0.5, 52, 52, 255, 255, 255, alph["D"])
+    dragble.group("#WKEY", "#WACTIVE", "#AKEY", "#AACTIVE", "#SKEY", "#SACTIVE", "#DKEY", "#DACTIVE")
+    --dragble.empty_rect("#1", 0, y*0.5, w, h, 255, 255, 255, 255, true)
+    --dragble.empty_rect("#2", 100, 0, w, h, 255,255,0,255, true)
     --dragble.group("#1", "#2")
-    dragble.rectangle("#3", 500, 500, w, h, 0, 255,255,255, true)
+    --dragble.rectangle("#3", 500, 500, w, h, 0, 255,255,255, true)
 end)
