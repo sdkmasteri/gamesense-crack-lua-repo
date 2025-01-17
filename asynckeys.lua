@@ -41,7 +41,7 @@ dragble.empty_rect = function(index, x, y, w, h, r, g, b, a, hover)
             end
             renderer.rectangle(cursored[index] ~= nil and cursored[index].x or x, cursored[index] ~= nil and cursored[index].y or y, w, h, r, g, b, alpha[index])
         end
-        if not firstclick and not abs[index] then return end
+        if not firstclick and not abs[index] then return {x = cursored ~= nil and cursored[index] ~= nil and cursored[index].x or x, y = cursored ~= nil and cursored[index] ~= nil and cursored[index].y or y} end
         if clicked then
             if in_range(cpos, range) or abs[index] then
                 client.exec("-attack")
@@ -52,6 +52,7 @@ dragble.empty_rect = function(index, x, y, w, h, r, g, b, a, hover)
             abs[index] = false 
         end
     end
+    return {x = cursored ~= nil and cursored[index] ~= nil and cursored[index].x or x, y = cursored ~= nil and cursored[index] ~= nil and cursored[index].y or y}
 end
 dragble.rectangle = function(index, x, y, w, h, r, g, b, a, hover)
     renderer.rectangle(cursored[index] ~= nil and cursored[index].x or x, cursored[index] ~= nil and cursored[index].y or y, w, h, r, g, b, alpha[index]~= nil and ui.is_menu_open() and alpha[index] or a)
@@ -127,10 +128,10 @@ client.set_event_callback("paint",  function()
     if not ui.get(enabler) then return end
     local x, y = client.screen_size()
     local w, h = 100, 100
-    dragble.texture("#WKEY", w_key, 57, y*0.5 - 52, 52, 52, 255, 255, 255, 255)
-    dragble.texture("#AKEY", a_key, 5, y*0.5, 52, 52, 255, 255, 255, 255)
-    dragble.texture("#SKEY", s_key, 57, y*0.5, 52, 52, 255, 255, 255, 255)
-    dragble.texture("#DKEY", d_key, 109, y*0.5, 52, 52, 255, 255, 255, 255)
+    renderer.texture(w_key, abc ~= nil and abc.x + 54 or 54, abc ~= nil and abc.y or y*0.5 - 52, 52, 52, 255, 255, 255, 255)
+    renderer.texture(a_key, abc ~= nil and abc.x + 1 or 2, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, 255)
+    renderer.texture(s_key, abc ~= nil and abc.x + 54 or 54, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, 255)
+    renderer.texture(d_key, abc ~= nil and abc.x + 109 or 109, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, 255)
     if client.key_state(0x57) then
         alph["W"] = math.floor(math.lerp(alph["W"], 255, 0.5))
     else
@@ -151,13 +152,12 @@ client.set_event_callback("paint",  function()
     else
         alph["D"] = math.ceil(math.lerp(alph["D"], 0, 0.5))
     end
-    dragble.texture("#WACTIVE", w_ac, 57, y*0.5 -52, 52, 52, 255, 255, 255, alph["W"])
-    dragble.texture("#AACTIVE", a_ac, 5, y*0.5, 52, 52, 255, 255, 255, alph["A"])
-    dragble.texture("#SACTIVE", s_ac, 57, y*0.5, 52, 52, 255, 255, 255, alph["S"])
-    dragble.texture("#DACTIVE", d_ac, 109, y*0.5, 52, 52, 255, 255, 255, alph["D"])
-    dragble.group("#WKEY", "#WACTIVE", "#AKEY", "#AACTIVE", "#SKEY", "#SACTIVE", "#DKEY", "#DACTIVE")
-    --dragble.empty_rect("#1", 0, y*0.5, w, h, 255, 255, 255, 255, true)
-    --dragble.empty_rect("#2", 100, 0, w, h, 255,255,0,255, true)
-    --dragble.group("#1", "#2")
-    --dragble.rectangle("#3", 500, 500, w, h, 0, 255,255,255, true)
+    renderer.texture(w_ac, abc ~= nil and abc.x + 54 or 54, abc ~= nil and abc.y or y*0.5 - 52, 52, 52, 255, 255, 255, alph["W"])
+    renderer.texture(a_ac, abc ~= nil and abc.x + 1 or 2, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, alph["A"])
+    renderer.texture(s_ac, abc ~= nil and abc.x + 54 or 54, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, alph["S"])
+    renderer.texture(d_ac, abc ~= nil and abc.x + 109 or 109, abc ~= nil and abc.y + 54 or y*0.5 + 2, 52, 52, 255, 255, 255, alph["D"])
+    if ui.is_menu_open() then
+        abc = dragble.empty_rect("#RECT", 0, y*0.5 -54, 163, 109, 255, 255, 255, 255, false)
+    end
+
 end)
