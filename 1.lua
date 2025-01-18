@@ -105,8 +105,12 @@ local ragegui = {
         duck_peek_assist = ui.reference("Rage", "Other", "Duck peek assist")
     }
 }
+local visualgui = {
+    tperson = {ui.reference("Visuals", "Effects", "Force third person (alive)")}
+}
 cvardef.default_view = {cvar.viewmodel_fov:get_float(), cvar.viewmodel_offset_x:get_float(), cvar.viewmodel_offset_y :get_float(), cvar.viewmodel_offset_z:get_float()}
 cvardef.def_tdist = cvar.cam_idealdist:get_int()
+--region @tabs
 local tabs = {
     ["Main"] = {
         ui.new_label("AA", "Anti-aimbot angles", "expensive.lua"),
@@ -275,6 +279,10 @@ local tabs = {
     ["Visuals"] = {
         indicators = {
             ui.new_checkbox("AA", "Anti-aimbot angles", "Indicators")
+        },
+        nimbus = {
+            ui.new_checkbox("AA", "Anti-aimbot angles", "Nimbus"),
+            ui.new_color_picker("AA", "Anti-aimbot angles", "Nimbus Color", 255, 255, 255, 255)
         }
     },
     ["Misc"] = {
@@ -324,6 +332,7 @@ local tabs = {
         exportcfg = ui.new_button("AA", "Anti-aimbot angles", "Export Config", cfg.export)
     }
 }
+--region @tabs end
 ui.set_callback(tabs["Configs"].configbox, function()
     local configname = cfg.names[ui.get(tabs["Configs"].configbox) + 1]
     if configname == nil then return end
@@ -389,6 +398,17 @@ utils.set_visibleA = function(tables, val)
         end
     end
 end
+utils.checkbox_visible = function(tab)
+    for k, v in pairs(tab) do
+        for _, val in pairs(v) do
+            if val == v[1] then
+                ui.set_visible(v[1], true)
+            else 
+                ui.set_visible(val, ui.get(v[1]))
+            end
+        end
+    end
+end
 utils.visible_aa = function()
     local tab = tabs["Anti-Aimbot"]
     local enabled =  ui.get(tab[1])
@@ -442,6 +462,8 @@ utils.visible_tabs = function(tables)
             if ui.get(switch) == k then
                 if k == "Misc" then
                     utils.visible_misc()
+                elseif k == "Visuals" then
+                    utils.checkbox_visible(v)
                 elseif k == "Anti-Aimbot" then
                     utils.visible_aa()
                 else
@@ -877,7 +899,41 @@ indicate.cross = function()
         renderer.text(is_scoped and screen.x*0.5 + weight*0.5 or screen.x*0.5, screen.y*0.5 + height , colors.white[1], colors.white[2], colors.white[3], 255, "-c", 0, "EXP.DEV")
     end
 end
+renderer.world_circle = function(origin, size, color)
+    if origin[1] == nil then return end
+
+    local last_point = nil
+
+    for i = 0, 360, 5 do
+        local new_point = {
+            origin[1] - (math.sin(math.rad(i)) * size),
+            origin[2] - (math.cos(math.rad(i)) * size),
+            origin[3]
+        }
+
+        if last_point ~= nil then
+            local old_screen_point = {renderer.world_to_screen(last_point[1], last_point[2], last_point[3])}
+            local new_screen_point = {renderer.world_to_screen(new_point[1], new_point[2], new_point[3])}
+
+            if old_screen_point[1] ~= nil and new_screen_point[1] ~= nil then 
+                renderer.line(old_screen_point[1], old_screen_point[2], new_screen_point[1], new_screen_point[2], color[1], color[2], color[3], color[4])
+            end
+        end
+
+        last_point = new_point
+    end
+end
+local function paint_nimb()
+    if not ui.get(tabs["Visuals"].nimbus[1]) then return end
+    local lplayer = entity.get_local_player()
+    if not entity.is_alive(lplayer) or not ui.get(visualgui.tperson[2]) then return end
+    local pos = {entity.hitbox_position(lplayer, 0)}
+    pos[3] = pos[3] + 8
+    renderer.world_circle(pos, 5, {ui.get(tabs["Visuals"].nimbus[2])})
+    
+end
 client.set_event_callback("paint", indicate.cross)
+client.set_event_callback("paint", paint_nimb)
 client.set_event_callback("paint_ui", menu_visible)
 client.set_event_callback("aim_fire", logs.on_fire)
 client.set_event_callback("aim_hit", logs.on_hit)
