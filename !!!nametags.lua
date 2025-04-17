@@ -1,8 +1,4 @@
 local ffi = require("ffi")
-local inspect = require("gamesense/inspect")
-reinterpret_cast = function(addr, typestring)
-    return function(...) return ffi.cast(typestring, client.find_signature("engine.dll", "\xFF\xE1"))(addr, ...) end
-end
 ffi.cdef[[
     typedef int BOOL;
     typedef void* LPVOID;
