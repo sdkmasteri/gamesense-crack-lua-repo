@@ -20,14 +20,12 @@ ffi.cdef[[
         FRAME_RENDER_START,
         FRAME_RENDER_END
     };
-    int sprintf_s(char* buffer, size_t sizeOfBuffer, const char *format, ...);
     BOOL VirtualProtect(LPVOID lpAddress, SIZE_T dwSize, DWORD  flNewProtect, PDWORD lpflOldProtect);
     LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD  flAllocationType, DWORD  flProtect);
 ]]
 local get_pattern = {
     GetModuleHandlePtr = ffi.cast("void***", ffi.cast("uint32_t", client.find_signature("engine.dll", "\xFF\x15\xCC\xCC\xCC\xCC\x85\xC0\x74\x0B")) + 2)[0][0],
     GetProcAddressPtr = ffi.cast("void***", ffi.cast("uint32_t", client.find_signature("engine.dll", "\xFF\x15\xCC\xCC\xCC\xCC\xA3\xCC\xCC\xCC\xCC\xEB\x05")) + 2)[0][0],
-    _sprintf_sPtr = ffi.cast("void***", ffi.cast("uint32_t", client.find_signature("engine.dll", "\x55\x8B\xEC\x8D\x45\x14\x50"))+ 2)[0][0],
     reinterpret_cast = function(addr, typestring)
         return function(...) return ffi.cast(typestring, client.find_signature("engine.dll", "\xFF\xE1"))(addr, ...) end
     end,
@@ -36,10 +34,8 @@ local get_pattern = {
 do
     get_pattern.fnGetModuleHandle = get_pattern.reinterpret_cast(get_pattern.GetModuleHandlePtr, "void*(__thiscall*)(void*, const char*)")
     get_pattern.fnGetProcAddress = get_pattern.reinterpret_cast(get_pattern.GetProcAddressPtr, "void*(__thiscall*)(void*, void*, const char*)")
-    get_pattern.fnsprintf_s = get_pattern.reinterpret_cast(get_pattern._sprintf_sPtr, "void*(__thiscall*)(void*, char*, size_t, const char*, ...)")
     get_pattern.GetModuleHandle = get_pattern.fnGetModuleHandle
     get_pattern.GetProcAddress = get_pattern.fnGetProcAddress
-    get_pattern.sprintf_s = get_pattern.fnsprintf_s
 
     get_pattern.lib = { kernel32 = get_pattern.GetModuleHandle("kernel32.dll") }
     get_pattern.export = {
@@ -89,16 +85,25 @@ do
         return chook.data
     end
 end
-local native_GetClientEntity1 = vtable_bind("client_panorama.dll", "VClientEntityList003", 3, "void*(__thiscall*)(void*,int)")
+
 local vtbl = ffi.cast("intptr_t**", client.create_interface("client.dll", "VClient018"))[0]
-local viem = client.find_signature("client.dll", "\x55\x8B\xEC\x80\xCC\xCC\xCC\xCC\xCC\xCC\x56\x57\x8B\xF9")
+
+local skinref = ui.reference('SKINS', 'Weapon skin', 'Skin')
+
 ui.new_label("Skins", "Weapon skin", "NameTag")
 local nametag = ui.new_textbox("Skins", "Weapon skin", "NameTag")
+local allweapons = {}
+local lastweapon = nil
 origframe = nil
+
 local function applytag(weapon)
     if string.len(ui.get(nametag)) < 1 then return end
-    entity.set_prop(weapon, "m_szCustomName", ui.get(nametag))
+    local wname = entity.get_classname(weapon)
+    if string.find(wname, "Grenade") or wname == "CFlashbang" then return end
+    local defindex = entity.get_prop(weapon, "m_iItemDefinitionIndex")
+    entity.set_prop(weapon, "m_szCustomName", allweapons[defindex])
 end
+
 local function test(thisptr, stage)
     while stage == ffi.C.FRAME_NET_UPDATE_POSTDATAUPDATE_START do
         local lplayer = entity.get_local_player()
@@ -113,6 +118,21 @@ end
 
 local hoknt = hook.new(vtbl)
 origframe = hoknt.hook("void*(__thiscall*)(void*, int)", 37, test, 5)
+client.set_event_callback("item_equip", function(e)
+    local lplayer = entity.get_local_player()
+    if client.userid_to_entindex(e.userid) ~= lplayer then return end
+    local weapon = entity.get_player_weapon(lplayer)
+    local wname = entity.get_classname(weapon)
+    if string.find(wname, "Grenade") or wname == "CFlashbang" then return end
+    if allweapons[e.defindex] == nil then
+        allweapons[e.defindex] = ""
+    end
+    if lastweapon ~= nil then
+        allweapons[lastweapon] = ui.get(nametag)
+    end
+    ui.set(nametag, allweapons[e.defindex])
+    lastweapon = e.defindex
+end)
 client.set_event_callback("shutdown", function()
     for _, unhook_all in ipairs(hook.all) do
         unhook_all()
