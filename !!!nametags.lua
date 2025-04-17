@@ -96,11 +96,7 @@ ui.new_label("Skins", "Weapon skin", "NameTag")
 local nametag = ui.new_textbox("Skins", "Weapon skin", "NameTag")
 origframe = nil
 local function applytag(weapon)
-    local nativewp = native_GetClientEntity1(weapon)
-    if nativewp == nil then return end
-    local itemindex = entity.get_prop(weapon, "m_iItemDefinitionIndex")
     if string.len(ui.get(nametag)) < 1 then return end
-    --get_pattern.sprintf_s(, 32, "%s", ui.get(nametag))
     entity.set_prop(weapon, "m_szCustomName", ui.get(nametag))
 end
 local function test(thisptr, stage)
@@ -110,7 +106,7 @@ local function test(thisptr, stage)
         local weapon = entity.get_player_weapon(lplayer)
         if weapon == nil then break end
         applytag(weapon)
-        break;
+        break
     end
     origframe(thisptr, stage)
 end
