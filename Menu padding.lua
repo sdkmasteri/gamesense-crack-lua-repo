@@ -41,8 +41,9 @@ end)
 
 defer(function()
 
-    for k, v in ipairs(default) do
-        padding[k][0] = v
-    end
+    padding.right[0]    = default.right
+    padding.left[0]     = default.left
+    padding.top[0]      = default.top
+    padding.bot[0]      = default.bot
 
 end)
