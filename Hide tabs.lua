@@ -11,12 +11,11 @@ local vals = {}
 local tochange = {"Rage", "AA", "Legit", "Visuals", "Misc", "Skins", "Plist", "Config"}
 
 tabs[0] = ffi.cast("char*", ffi.cast("int*", rbase[0])[0] + 0x15)
-
+vals[0] = tabs[0][0] == 0x01 and true or false
 for i=1, #tochange do
     local tabclass = ffi.cast("int*", base[0] - (0x20 - 0x4*(i-1)))
     tabs[i] = ffi.cast("char*", tabclass[0] + 0x15)
     vals[i] = tabs[i][0] == 0x01 and true or false
-    print(vals[i])
 end
 
 local disablebox    = ui.new_listbox("LUA", "A", "Disable tabs", tochange) 
