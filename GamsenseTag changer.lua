@@ -1,0 +1,22 @@
+local ffi = require("ffi")
+
+local gam = ffi.cast("char*", 0x433415DD)
+local esen = ffi.cast("char*", 0x433415E3)
+local se = ffi.cast("char*", 0x433415EA)
+
+local repl = ui.new_textbox("LUA", "A", "ClanTag")
+ui.new_button("LUA", "A", "Apply", function()
+    local str = ui.get(repl)
+    local len = string.len(str)
+    local cstr = ffi.new("char[9]", 0x00)
+    ffi.copy(cstr, str, len)
+    ffi.copy(gam, cstr, 3)
+    ffi.copy(esen, cstr + 3, 4)
+    ffi.copy(se, cstr + 7, 2)
+end)
+
+defer(function()
+    ffi.copy(gam, "gam", 3)
+    ffi.copy(esen, "esen", 4)
+    ffi.copy(se, "se", 2)
+end)
