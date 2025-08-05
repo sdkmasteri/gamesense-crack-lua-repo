@@ -2,7 +2,7 @@ local ffi = require("ffi")
 local clipboard = require("gamesense/clipboard")
 local fsystem = {}
 local iinput = {}
-local mattable = database.read("skychams::mattable") or {}
+local mattable = database.read("skychams::mattable", mattable) or {}
 local menu = {}
 do
     local filesystem_interface = ffi.cast(ffi.typeof("void***"), client.create_interface("filesystem_stdio.dll", "VFileSystem017"))
@@ -95,11 +95,13 @@ do
 
         return materialsystem.get_model_materials(entindex);
     end
-    mattable.target = {"Local Player", "Weapon Model", "Attachments"}
+    mattable.target = {"Local Player", "Weapon Model", "View Model"}
     mattable.matsv  = mattable.matsv or {}
-    mattable["Local Player"] = {enable = false}
-    mattable["Weapon Model"] = {enable = false}
-    mattable["Attachments"]  = {enable = false}
+    if mattable["Local Player"] == nil then
+        for i = 1, #mattable.target do
+            mattable[mattable.target[i]] = {enable = false}
+        end
+    end
     menu.matsvi = database.read("skychams::matsvi") or {}
     menu.target = ui.new_listbox("LUA", "A", "Options", mattable.target)
     menu.matsv  = ui.new_listbox("LUA", "A", "Materials", menu.matsvi)
@@ -165,6 +167,7 @@ do
 end
 materialsystem._set_material = function(id)
     local lplayer = entity.get_local_player()
+    if lplayer == nil then return end
     local wp = entity.get_player_weapon(lplayer)
     local is_tp = iinput.is_third_person()
     if id then
@@ -174,6 +177,11 @@ materialsystem._set_material = function(id)
                 lmats[i]:reload()
             end
         elseif id == "Weapon Model" then
+            local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
+            for i = 1, #lmats do
+                lmats[i]:reload()
+            end
+        elseif id == "View Model" then
             local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
             for i = 1, #lmats do
                 lmats[i]:reload()
@@ -191,6 +199,13 @@ materialsystem._set_material = function(id)
             local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
             for i = 1, #lmats do
                 materialsystem.override_material(lmats[i], mattable["Weapon Model"].mat)
+            end
+        end
+    else 
+        if mattable["View Model"].enable then
+            local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
+            for i = 1, #lmats do
+                materialsystem.override_material(lmats[i], mattable["View Model"].mat)
             end
         end
     end
