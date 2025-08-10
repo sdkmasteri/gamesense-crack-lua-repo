@@ -76,32 +76,26 @@ do
 
     local function get_weapon_viewmodel(me, wpn, is_third_person)
         if wpn == nil then
-            return;
+            return
         end
 
         if is_third_person then
-            return entity.get_prop(wpn, "m_hWeaponWorldModel");
+            return entity.get_prop(wpn, "m_hWeaponWorldModel")
         end
-
-        return entity.get_prop(me, "m_hViewModel[0]");
+        return entity.get_prop(me, "m_hViewModel[0]")
     end
 
     materialsystem.get_weapon_materials = function(me, wpn, is_third_person)
         local entindex = get_weapon_viewmodel(me, wpn, is_third_person);
 
         if entindex == nil then
-            return { };
+            return { }
         end
 
         return materialsystem.get_model_materials(entindex);
     end
     mattable.target = {"Local Player", "Weapon Model", "View Model"}
     mattable.matsv  = mattable.matsv or {}
-    if mattable["Local Player"] == nil then
-        for i = 1, #mattable.target do
-            mattable[mattable.target[i]] = {enable = false}
-        end
-    end
     menu.matsvi = database.read("skychams::matsvi") or {}
     menu.target = ui.new_listbox("LUA", "A", "Options", mattable.target)
     menu.matsv  = ui.new_listbox("LUA", "A", "Materials", menu.matsvi)
@@ -120,6 +114,7 @@ do
             menu.is_changing = true
         else
             mattable[mattable.target[ui.get(menu.target)+1]].mat = mattable.matsv[ui.get(menu.matsv)+1]
+            mattable[mattable.target[ui.get(menu.target)+1]].id = ui.get(menu.matsv)+1
         end
     end
     local function backhandle(id)
@@ -161,7 +156,18 @@ do
     ui.set_callback(menu.clip, cliphandle)
     if (#menu.matsvi > 0) then
         for i = 1, #menu.matsvi do
-            mattable.matsv[i] = materialsystem.find_material(menu.matsvi[i]..'_parallax', true)
+            local mat = materialsystem.find_material(menu.matsvi[i]..'_parallax', true)
+            if mat == nil then
+                table.remove(menu.matsvi, i)
+            end
+            mattable.matsv[i] = mat
+        end
+        for _, t in ipairs(mattable.target) do
+            mattable[t].mat = mattable.matsv[mattable[t].id]
+        end
+    else
+        for _, t in ipairs(mattable.target) do
+            mattable[t] = {enable = false, mat = nil, id = nil}
         end
     end
 end
@@ -177,16 +183,17 @@ materialsystem._set_material = function(id)
                 lmats[i]:reload()
             end
         elseif id == "Weapon Model" then
-            local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
+            local lmats = materialsystem.get_weapon_materials(lplayer, wp, true)
             for i = 1, #lmats do
                 lmats[i]:reload()
             end
         elseif id == "View Model" then
-            local lmats = materialsystem.get_weapon_materials(lplayer, wp, is_tp)
+            local lmats = materialsystem.get_weapon_materials(lplayer, wp, false)
             for i = 1, #lmats do
                 lmats[i]:reload()
             end
         end
+        return
     end
     if is_tp then
         if mattable["Local Player"].enable then
@@ -215,4 +222,7 @@ client.set_event_callback("pre_render", materialsystem._set_material)
 defer(function()
     database.write("skychams::mattable", mattable)
     database.write("skychams::matsvi", menu.matsvi)
+    for _, i in ipairs(mattable.target) do
+        materialsystem._set_material(i)
+    end
 end)
